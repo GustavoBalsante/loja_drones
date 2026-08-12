@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages  # Importação das mensagens
+from django.contrib import messages
+from django.db.models import Q  # Permite buscar em múltiplos campos ao mesmo tempo
 from .models import Drone, Pedido
 
 # (Mantenha as funções index, detalhe_drone, adicionar_carrinho, ver_carrinho, remover_carrinho...)
@@ -30,8 +31,29 @@ def checkout(request):
     return render(request, 'loja/checkout.html', {'total': total})
 
 def index(request):
+    busca = request.GET.get('busca', '')
+    ordem = request.GET.get('ordem', '')
+
     drones = Drone.objects.all()
-    return render(request, 'loja/index.html', {'drones': drones})
+
+    # Filtra por nome ou marca se houver pesquisa
+    if busca:
+        drones = drones.filter(
+            Q(nome__icontains=busca) | Q(marca__icontains=busca)
+        )
+
+    # Ordena por preço se o usuário selecionar uma opção
+    if ordem == 'preco_asc':
+        drones = drones.order_by('preco')
+    elif ordem == 'preco_desc':
+        drones = drones.order_by('-preco')
+
+    context = {
+        'drones': drones,
+        'busca': busca,
+        'ordem': ordem
+    }
+    return render(request, 'loja/index.html', context)
 
 
 def detalhe_drone(request, drone_id):
