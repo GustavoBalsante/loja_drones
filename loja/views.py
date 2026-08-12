@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Drone, Pedido  # Importamos o Pedido aqui
+from django.contrib import messages  # Importação das mensagens
+from .models import Drone, Pedido
 
 # (Mantenha as funções index, detalhe_drone, adicionar_carrinho, ver_carrinho, remover_carrinho...)
 
@@ -43,10 +44,13 @@ def detalhe_drone(request, drone_id):
 def adicionar_carrinho(request, drone_id):
     carrinho = request.session.get('carrinho', {})
     drone_id_str = str(drone_id)
+    drone = get_object_or_404(Drone, id=drone_id)
 
-    # Soma +1 na quantidade do drone escolhido
     carrinho[drone_id_str] = carrinho.get(drone_id_str, 0) + 1
     request.session['carrinho'] = carrinho
+
+    # Notificação Toast de Sucesso
+    messages.success(request, f'"{drone.nome}" foi adicionado ao seu carrinho!')
     return redirect('ver_carrinho')
 
 
@@ -67,9 +71,13 @@ def ver_carrinho(request):
 def remover_carrinho(request, drone_id):
     carrinho = request.session.get('carrinho', {})
     drone_id_str = str(drone_id)
+    drone = get_object_or_404(Drone, id=drone_id)
 
     if drone_id_str in carrinho:
         del carrinho[drone_id_str]
         request.session['carrinho'] = carrinho
+        # Notificação Toast de Remoção
+        messages.info(request, f'"{drone.nome}" foi removido do carrinho.')
 
     return redirect('ver_carrinho')
+
