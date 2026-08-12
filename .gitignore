@@ -1,0 +1,16 @@
+# Pasta do ambiente virtual (muito pesada, não precisa subir)
+.venv/
+venv/
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+
+# Banco de dados local (contém senhas de teste e dados locais)
+db.sqlite3
+
+# Configurações do PyCharm
+.idea/
+
+# Arquivos de mídia de teste enviados via upload
+media/

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DroneShop - Sua Loja de Drones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Cabeçalho / Navbar -->
+    <header class="bg-blue-900 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'index' %}" class="text-2xl font-bold flex items-center gap-2">
+                🚁 <span>DroneShop</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'ver_carrinho' %}" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                    🛒 <span>Meu Carrinho</span>
+                </a>
+                <a href="/admin" class="text-sm bg-blue-800 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition">
+                    Painel Admin
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container mx-auto mt-8 p-4 flex-grow">
+        <h2 class="text-3xl font-bold mb-6 text-center text-gray-900">Catálogo de Drones</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for drone in drones %}
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 flex flex-col justify-between hover:shadow-lg transition">
+
+                    <!-- Imagem do Produto -->
+                    <div>
+                        {% if drone.imagem %}
+                            <img src="{{ drone.imagem.url }}" alt="{{ drone.nome }}" class="w-full h-52 object-cover">
+                        {% else %}
+                            <div class="w-full h-52 bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                                Sem Foto Disponível
+                            </div>
+                        {% endif %}
+
+                        <!-- Conteúdo do Card -->
+                        <div class="p-5">
+                            <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                {{ drone.marca }}
+                            </span>
+                            <h3 class="text-xl font-bold mt-2 text-gray-900">{{ drone.nome }}</h3>
+                            <p class="text-gray-600 text-sm mt-2 line-clamp-2 leading-relaxed">
+                                {{ drone.descricao }}
+                            </p>
+
+                            <!-- Informações Técnicas Rápidas -->
+                            <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-3">
+                                <span>🔋 Bateria: {{ drone.autonomia_minutos }} min</span>
+                                <span>📡 Alcance: {{ drone.alcance_km }} km</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preço e Botões de Ação -->
+                    <div class="p-5 bg-gray-50 border-t border-gray-100 flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Preço à vista</span>
+                            <span class="text-2xl font-extrabold text-green-600">R$ {{ drone.preco }}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="{% url 'detalhe_drone' drone.id %}" class="block text-center border border-blue-600 text-blue-600 hover:bg-blue-50 font-bold py-2 px-3 rounded-lg text-sm transition">
+                                Detalhes
+                            </a>
+                            <a href="{% url 'adicionar_carrinho' drone.id %}" class="block text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg text-sm transition">
+                                Comprar
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-12 bg-white rounded-xl shadow border">
+                    <p class="text-gray-500 text-lg">Nenhum drone cadastrado no momento.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-gray-400 text-center py-6 mt-12 text-sm">
+        <p>© 2026 DroneShop - Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
